@@ -17,8 +17,7 @@
 /**
  * Settings for the coursesstatus report
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $ADMIN->add('reports', new admin_externalpage('reportcoursesstatus',
             get_string('coursesstatus', 'report_coursesstatus'),
-            $CFG->wwwroot . "/report/coursesstatus/index.php",'report/coursesstatus:view'));
+            $CFG->wwwroot . "/report/coursesstatus/index.php", 'report/coursesstatus:view'));
 
-// no report settings
+// No report settings.
 $settings = null;

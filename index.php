@@ -17,8 +17,7 @@
 /**
  * A report to display the courses status (stats, counters, general information)
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,11 +35,11 @@ $perpage        = optional_param('perpage', 30, PARAM_INT);        // how many p
 $format         = optional_param('format', '', PARAM_ALPHA);
 
 
-admin_externalpage_setup('reportcoursesstatus', '', null, '', array('pagelayout'=>'report'));
+admin_externalpage_setup('reportcoursesstatus', '', null, '', array('pagelayout' => 'report'));
 
 $baseurl = new moodle_url('/report/coursesstatus/index.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage));
 
-// create the user filter form
+// Create the filter form.
 $filtering = new coursesstatus_filtering();
 
 list($extrasql, $params) = $filtering->get_sql_filter();
@@ -55,16 +54,16 @@ if (strpos($extrasql, 'l.lastmodify') !== false) {
     $extrasql = $extrasql ? ' WHERE ' . $extrasql : '';
 
     $sql = "SELECT c.*, l.lastmodify
-        FROM {course} AS c
+        FROM {course} c
         LEFT JOIN (SELECT MAX(timecreated) AS lastmodify, courseid FROM {logstore_standard_log} WHERE crud <> 'r'
-        GROUP BY courseid) AS l ON l.courseid = c.id
+        GROUP BY courseid) l ON l.courseid = c.id
         " . $extrasql . " ORDER BY " . $sort . ' ' . $dir;
     $courses = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
 
     $sql = "SELECT COUNT('x')
-        FROM {course} AS c
+        FROM {course} c
         LEFT JOIN (SELECT MAX(timecreated) AS lastmodify, courseid FROM {logstore_standard_log} WHERE crud <> 'r'
-        GROUP BY courseid) AS l ON l.courseid = c.id
+        GROUP BY courseid) l ON l.courseid = c.id
         " . $extrasql;
 
     $coursesearchcount = $DB->count_records_sql($sql, $params);
@@ -125,8 +124,8 @@ if ($courses) {
             $fields[$fieldname] = empty($result->name) ? $result->shortname : $result->name;
         }
 
-        foreach($courses as $row) {
-            // ToDo: Build with log_manager
+        foreach ($courses as $row) {
+            // ToDo: Build with log_manager.
             if ($withlastmodify) {
                 $lastchange = $row->lastmodify;
             } else {
@@ -136,8 +135,7 @@ if ($courses) {
 
             if ($lastchange) {
                 $row->lastmodify = userdate($lastchange, $strftimedate);
-            }
-            else {
+            } else {
                 $row->lastmodify = '';
             }
 
@@ -156,11 +154,10 @@ if ($courses) {
 
             if (!$row->category) {
                 $textcats = $strcsystem;
-            }
-            else {
+            } else {
                 $cats = trim($categories[$row->category]->path, '/');
                 $cats = explode('/', $cats);
-                foreach($cats as $key => $cat) {
+                foreach ($cats as $key => $cat) {
                     if (!empty($cat)) {
                         $cats[$key] = $categories[$cat]->name;
                     }
@@ -280,16 +277,15 @@ if ($courses) {
 
         if (!$row->category) {
             $textcats = $strcsystem;
-        }
-        else {
+        } else {
             $cats = trim($categories[$row->category]->path, '/');
             $cats = explode('/', $cats);
-            foreach($cats as $key => $cat) {
+            foreach ($cats as $key => $cat) {
                 if (!empty($cat)) {
                     $cats[$key] = html_writer::tag('a',
                                     html_writer::tag('span', $categories[$cat]->name, array('class' => 'singleline')),
-                                    array('href' =>
-                                        new moodle_url('/course/index.php', array('categoryid' => $categories[$cat]->id)))
+                                    array('href' => new moodle_url('/course/index.php',
+                                                        array('categoryid' => $categories[$cat]->id)))
                                 );
                 }
             }
@@ -300,12 +296,11 @@ if ($courses) {
         $format = $row->format == 'site' ? get_string('default') : get_string('pluginname', 'format_' . $row->format);
 
         $coursename = html_writer::tag('a', $row->fullname,
-                        array('href' =>  new moodle_url('/course/view.php', array('id' => $row->id))));
+                        array('href' => new moodle_url('/course/view.php', array('id' => $row->id))));
 
         if ($lastchange) {
             $lastmodify = userdate($lastchange, $strftimedate);
-        }
-        else {
+        } else {
             $lastmodify = $strnever;
         }
 
@@ -318,7 +313,6 @@ if ($courses) {
         $roleassignments = html_writer::start_tag('ul');
         foreach ($rolecounts as $result) {
             $a = new stdClass();
-//            $b->code = $names[$result->roleid]->shortname;
             $a->role = $names[$result->roleid]->localname;
             $a->count = $result->rolecount;
             $roleassignments .= html_writer::tag('li', get_string('assignedrolecount', 'moodle', $a),
@@ -326,10 +320,9 @@ if ($courses) {
         }
         $roleassignments .= html_writer::end_tag('ul');
 
-        // Create the row and add it to the table
+        // Create the row and add it to the table.
         $cells = array(
             $coursename, $row->shortname, $row->idnumber,
-    //        $format,
             userdate($row->startdate, $strfdate),
             userdate($row->timecreated, $strftimedate),
             userdate($row->timemodified, $strftimedate),

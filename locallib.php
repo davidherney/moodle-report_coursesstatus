@@ -17,15 +17,24 @@
 /**
  * This file contains the Courses status library functions.
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+ /**
+ * Export to ODS format.
+ *
+ * @param array $fields List of fields
+ * @param array $data Data table
+ *
  */
 function coursesstatus_download_ods($fields, $data) {
     global $CFG, $SESSION, $DB;
 
-    require_once $CFG->libdir . '/odslib.class.php';
+    require_once($CFG->libdir . '/odslib.class.php');
 
     $filename = clean_filename(get_string('filename', 'report_coursesstatus').'.ods');
 
@@ -44,7 +53,7 @@ function coursesstatus_download_ods($fields, $data) {
     $row = 1;
     foreach ($data as $datarow) {
         $col = 0;
-        foreach ($fields as $field=>$unused) {
+        foreach ($fields as $field => $unused) {
             if (property_exists($datarow, $field)) {
                 $worksheet[0]->write($row, $col, $datarow->$field);
             } else {
@@ -59,10 +68,17 @@ function coursesstatus_download_ods($fields, $data) {
     die;
 }
 
+ /**
+ * Export to XLS format.
+ *
+ * @param array $fields List of fields
+ * @param array $data Data table
+ *
+ */
 function coursesstatus_download_xls($fields, $data) {
     global $CFG, $SESSION, $DB;
 
-    require_once $CFG->libdir . '/excellib.class.php';
+    require_once($CFG->libdir . '/excellib.class.php');
 
     $filename = clean_filename(get_string('filename', 'report_coursesstatus').'.xls');
 
@@ -81,7 +97,7 @@ function coursesstatus_download_xls($fields, $data) {
     $row = 1;
     foreach ($data as $datarow) {
         $col = 0;
-        foreach ($fields as $field=>$unused) {
+        foreach ($fields as $field => $unused) {
             if (property_exists($datarow, $field)) {
                 $worksheet[0]->write($row, $col, $datarow->$field);
             } else {
@@ -96,10 +112,17 @@ function coursesstatus_download_xls($fields, $data) {
     die;
 }
 
+ /**
+ * Export to csv format.
+ *
+ * @param array $fields List of fields
+ * @param array $data Data table
+ *
+ */
 function coursesstatus_download_csv($fields, $data) {
     global $CFG, $SESSION, $DB;
 
-    require_once $CFG->libdir . '/csvlib.class.php';
+    require_once($CFG->libdir . '/csvlib.class.php');
 
     $filename = clean_filename(get_string('filename', 'report_coursesstatus'));
 
@@ -111,7 +134,7 @@ function coursesstatus_download_csv($fields, $data) {
         $row = array();
 
         $onerow = array();
-        foreach ($fields as $field=>$unused) {
+        foreach ($fields as $field => $unused) {
             if (property_exists($datarow, $field)) {
                 $onerow[] = $datarow->$field;
             } else {

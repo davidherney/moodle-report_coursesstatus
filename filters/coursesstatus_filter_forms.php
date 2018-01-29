@@ -17,11 +17,12 @@
 /**
  * This file contains forms used to filter coursesstatus.
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 

@@ -17,8 +17,7 @@
 /**
  * Strings for component 'report_coursesstatus'
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

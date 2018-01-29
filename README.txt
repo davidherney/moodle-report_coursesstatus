@@ -17,4 +17,4 @@ GIT: https://github.com/davidherney/moodle-report_coursesstatus
 IN VERSION
 =============
 2017080300:
-Start as a public project
+Started as a public project

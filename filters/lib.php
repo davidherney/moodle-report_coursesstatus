@@ -17,11 +17,12 @@
 /**
  * This file contains the Course status report filter API.
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once('filters/text.php');
 require_once('filters/date.php');
@@ -60,8 +61,8 @@ class coursesstatus_filtering {
         }
 
         if (empty($fieldnames)) {
-            $fieldnames = array('fullname' => 0, 'category' => 1, 'shortname' => 1, 'idnumber' => 1, 'startdate' => 1, 'timecreated' => 1, 'timemodified' => 1,
-                                /*'lastmodify' => 1,*/ 'visible' => 1);
+            $fieldnames = array('fullname' => 0, 'category' => 1, 'shortname' => 1, 'idnumber' => 1, 'startdate' => 1,
+                                'timecreated' => 1, 'timemodified' => 1, 'visible' => 1);
         }
 
         $this->_fields  = array();
@@ -73,7 +74,9 @@ class coursesstatus_filtering {
         }
 
         // Fist the new filter form.
-        $this->_addform = new coursesstatus_add_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+        $this->_addform = new coursesstatus_add_filter_form($baseurl,
+                                array('fields' => $this->_fields, 'extraparams' => $extraparams));
+
         if ($adddata = $this->_addform->get_data()) {
             foreach ($this->_fields as $fname => $field) {
                 $data = $field->check_data($adddata);
@@ -87,11 +90,14 @@ class coursesstatus_filtering {
             }
             // Clear the form.
             $_POST = array();
-            $this->_addform = new coursesstatus_add_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+            $this->_addform = new coursesstatus_add_filter_form($baseurl,
+                                    array('fields' => $this->_fields, 'extraparams' => $extraparams));
         }
 
         // Now the active filters.
-        $this->_activeform = new coursesstatus_active_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+        $this->_activeform = new coursesstatus_active_filter_form($baseurl,
+                                    array('fields' => $this->_fields, 'extraparams' => $extraparams));
+
         if ($adddata = $this->_activeform->get_data()) {
             if (!empty($adddata->removeall)) {
                 $SESSION->coursesstatus_filtering = array();
@@ -111,7 +117,8 @@ class coursesstatus_filtering {
             }
             // Clear+reload the form.
             $_POST = array();
-            $this->_activeform = new coursesstatus_active_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+            $this->_activeform = new coursesstatus_active_filter_form($baseurl,
+                                    array('fields' => $this->_fields, 'extraparams' => $extraparams));
         }
         // Now the active filters.
     }
@@ -126,17 +133,27 @@ class coursesstatus_filtering {
         global $USER, $CFG, $DB, $SITE;
 
         switch ($fieldname) {
-            case 'fullname':    return new coursesstatus_filter_text('fullname', get_string('course'), $advanced, 'fullname');
+            case 'fullname':
+                return new coursesstatus_filter_text('fullname', get_string('course'), $advanced, 'fullname');
             case 'category':
-                $categories = $DB->get_records_menu('course_categories', null, 'text', "id, CONCAT(name, ' (', IF(ISNULL(idnumber), '-', idnumber), ')') AS text");
+                $categories = $DB->get_records_menu('course_categories', null, 'text',
+                                        "id, CONCAT(name, ' (', IF(ISNULL(idnumber), '-', idnumber), ')') AS text");
                 return new coursesstatus_filter_select('category', get_string('category'), $advanced, 'category', $categories);
-            case 'shortname':    return new coursesstatus_filter_text('shortname', get_string('shortname'), $advanced, 'shortname');
-            case 'idnumber':     return new coursesstatus_filter_text('idnumber', get_string('idnumber'), $advanced, 'idnumber');
-            case 'startdate':    return new coursesstatus_filter_date('startdate', get_string('startdate', 'report_coursesstatus'), $advanced, 'startdate');
-            case 'timecreated':  return new coursesstatus_filter_date('timecreated', get_string('timecreated', 'report_coursesstatus'), $advanced, 'timecreated');
-            case 'timemodified': return new coursesstatus_filter_date('timemodified', get_string('timemodified', 'report_coursesstatus'), $advanced, 'timemodified');
-            //case 'lastmodify':   return new coursesstatus_filter_date('lastmodify', get_string('lastmodify', 'report_coursesstatus'), $advanced, 'l.lastmodify');
-            case 'visible':      return new coursesstatus_filter_yesno('visible', get_string('visible'), $advanced, 'visible');
+            case 'shortname':
+                return new coursesstatus_filter_text('shortname', get_string('shortname'), $advanced, 'shortname');
+            case 'idnumber':
+                return new coursesstatus_filter_text('idnumber', get_string('idnumber'), $advanced, 'idnumber');
+            case 'startdate':
+                return new coursesstatus_filter_date('startdate',
+                                get_string('startdate', 'report_coursesstatus'), $advanced, 'startdate');
+            case 'timecreated':
+                return new coursesstatus_filter_date('timecreated',
+                                get_string('timecreated', 'report_coursesstatus'), $advanced, 'timecreated');
+            case 'timemodified':
+                return new coursesstatus_filter_date('timemodified',
+                                get_string('timemodified', 'report_coursesstatus'), $advanced, 'timemodified');
+            case 'visible':
+                return new coursesstatus_filter_yesno('visible', get_string('visible'), $advanced, 'visible');
 
             default:
                 return null;
@@ -231,13 +248,6 @@ class coursesstatus_filter_type {
         $this->_name     = $name;
         $this->_label    = $label;
         $this->_advanced = $advanced;
-    }
-
-    /**
-     * Old syntax of class constructor for backward compatibility.
-     */
-    public function coursesstatus_filter_type($name, $label, $advanced) {
-        self::__construct($name, $label, $advanced);
     }
 
     /**

@@ -17,11 +17,12 @@
 /**
  * Value select filter.
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once('filters/lib.php');
 
@@ -52,18 +53,11 @@ class coursesstatus_filter_select extends coursesstatus_filter_type {
      * @param array $options select options
      * @param mixed $default option
      */
-    public function __construct($name, $label, $advanced, $field, $options, $default=null) {
+    public function __construct($name, $label, $advanced, $field, $options, $default = null) {
         parent::__construct($name, $label, $advanced);
         $this->_field   = $field;
         $this->_options = $options;
         $this->_default = $default;
-    }
-
-    /**
-     * Old syntax of class constructor for backward compatibility.
-     */
-    public function coursesstatus_filter_select($name, $label, $advanced, $field, $options, $default=null) {
-        self::__construct($name, $label, $advanced, $field, $options, $default=null);
     }
 
     /**

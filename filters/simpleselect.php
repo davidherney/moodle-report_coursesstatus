@@ -17,11 +17,12 @@
 /**
  * Simple value select filter.
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once('filters/lib.php');
 
@@ -54,13 +55,6 @@ class coursesstatus_filter_simpleselect extends coursesstatus_filter_type {
         parent::__construct($name, $label, $advanced);
         $this->_field   = $field;
         $this->_options = $options;
-    }
-
-    /**
-     * Old syntax of class constructor for backward compatibility.
-     */
-    public function coursesstatus_filter_simpleselect($name, $label, $advanced, $field, $options) {
-        self::__construct($name, $label, $advanced, $field, $options);
     }
 
     /**

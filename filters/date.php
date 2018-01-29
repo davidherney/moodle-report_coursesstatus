@@ -17,11 +17,12 @@
 /**
  * Date filter
  *
- * @package    report
- * @subpackage coursesstatus
+ * @package    report_coursesstatus
  * @copyright 2017 David Herney Bernal - cirano
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 require_once('filters/lib.php');
 
@@ -47,13 +48,6 @@ class coursesstatus_filter_date extends coursesstatus_filter_type {
     public function __construct($name, $label, $advanced, $field) {
         parent::__construct($name, $label, $advanced);
         $this->_field = $field;
-    }
-
-    /**
-     * Old syntax of class constructor for backward compatibility.
-     */
-    public function coursesstatus_filter_date($name, $label, $advanced, $field) {
-        self::__construct($name, $label, $advanced, $field);
     }
 
     /**
