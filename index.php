@@ -245,7 +245,7 @@ if ($courses) {
                 } else {
                     $columnicon = ($dir == "ASC") ? "sort_asc" : "sort_desc";
                 }
-                $columnicon = "<img class='iconsort' src=\"" . $OUTPUT->pix_url('t/' . $columnicon) . "\" alt=\"\" />";
+                $columnicon = $OUTPUT->pix_icon('t/' . $columnicon, '');
 
             }
             $table->head[] = "<a href=\"index.php?sort=$column&amp;dir=$columndir\">".$stringcolumns[$column]."</a>$columnicon";
