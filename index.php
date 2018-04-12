@@ -31,7 +31,7 @@ $categoryid     = optional_param('categoryid', 0, PARAM_INT);
 $sort           = optional_param('sort', 'fullname', PARAM_ALPHANUM);
 $dir            = optional_param('dir', 'ASC', PARAM_ALPHA);
 $page           = optional_param('page', 0, PARAM_INT);
-$perpage        = optional_param('perpage', 30, PARAM_INT);        // how many per page
+$perpage        = optional_param('perpage', 30, PARAM_INT);
 $format         = optional_param('format', '', PARAM_ALPHA);
 
 
@@ -239,7 +239,7 @@ if ($courses) {
                     $columndir = "ASC";
                 }
             } else {
-                $columndir = $dir == "ASC" ? "DESC":"ASC";
+                $columndir = $dir == "ASC" ? "DESC" : "ASC";
                 if ($column == "lastaccess") {
                     $columnicon = ($dir == "ASC") ? "sort_desc" : "sort_asc";
                 } else {
@@ -259,7 +259,7 @@ if ($courses) {
 
         $coursecontext = context_course::instance($row->id);
 
-        // ToDo: Build with log_manager
+        // ToDo: Build with log_manager.
         if ($withlastmodify) {
             $lastchange = $row->lastmodify;
         } else {

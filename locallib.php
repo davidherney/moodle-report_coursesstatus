@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
- /**
+/**
  * Export to ODS format.
  *
  * @param array $fields List of fields
@@ -68,7 +68,7 @@ function coursesstatus_download_ods($fields, $data) {
     die;
 }
 
- /**
+/**
  * Export to XLS format.
  *
  * @param array $fields List of fields
@@ -112,7 +112,7 @@ function coursesstatus_download_xls($fields, $data) {
     die;
 }
 
- /**
+/**
  * Export to csv format.
  *
  * @param array $fields List of fields
