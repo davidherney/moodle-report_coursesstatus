@@ -137,7 +137,7 @@ class coursesstatus_filtering {
                 return new coursesstatus_filter_text('fullname', get_string('course'), $advanced, 'fullname');
             case 'category':
                 $categories = $DB->get_records_menu('course_categories', null, 'text',
-                                        "id, CONCAT(name, ' (', IF(ISNULL(idnumber), '-', idnumber), ')') AS text");
+                                        "id, " . $DB->sql_concat('name', "' ('", "IF(idnumber IS NULL, '-', idnumber)", "')'") . " AS text");
                 return new coursesstatus_filter_select('category', get_string('category'), $advanced, 'category', $categories);
             case 'shortname':
                 return new coursesstatus_filter_text('shortname', get_string('shortname'), $advanced, 'shortname');
