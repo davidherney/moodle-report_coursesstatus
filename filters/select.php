@@ -99,7 +99,7 @@ class coursesstatus_filter_select extends coursesstatus_filter_type {
         $field    = $this->_name;
         $operator = $field.'_op';
 
-        if (array_key_exists($field, $formdata) and !empty($formdata->$operator)) {
+        if (property_exists($formdata, $field) && !empty($formdata->$operator)) {
             return array('operator' => (int)$formdata->$operator,
                          'value'    => (string)$formdata->$field);
         }

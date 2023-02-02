@@ -3,7 +3,7 @@ REPORT coursesstatus
 
 A Moodle admin report. Show the list of courses and some information about these.
 
-Package tested in: moodle 3.3+
+Package tested in: moodle 3.11+
 
 QUICK INSTALL
 ==============
@@ -16,6 +16,10 @@ GIT: https://github.com/davidherney/moodle-report_coursesstatus
 
 IN VERSION
 =============
+2017080303:
+Compatibility with Moodle 3.11
+Include setting option enablelastmodify
+
 2017080302:
 Changed deprecated function pix_url
 

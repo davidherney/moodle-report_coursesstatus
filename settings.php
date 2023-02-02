@@ -18,15 +18,23 @@
  * Settings for the coursesstatus report
  *
  * @package    report_coursesstatus
- * @copyright 2017 David Herney Bernal - cirano
+ * @copyright  2017 David Herney Bernal - cirano
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
+$settings = new admin_settingpage('report_coursesstatus', get_string('pluginname', 'report_coursesstatus'));
+
 $ADMIN->add('reports', new admin_externalpage('reportcoursesstatus',
             get_string('coursesstatus', 'report_coursesstatus'),
             $CFG->wwwroot . "/report/coursesstatus/index.php", 'report/coursesstatus:view'));
 
-// No report settings.
-$settings = null;
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_heading('report_coursesstatus_setting', '', get_string('pluginname', 'report_coursesstatus')));
+
+    // Disable web interface evaluation and get predictions.
+    $settings->add(new admin_setting_configcheckbox('report_coursesstatus/enablelastmodify',
+                                                    get_string('enablelastmodify', 'report_coursesstatus'),
+                                                    get_string('enablelastmodify_help', 'report_coursesstatus'), 1));
+}

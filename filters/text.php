@@ -87,8 +87,8 @@ class coursesstatus_filter_text extends coursesstatus_filter_type {
         $field    = $this->_name;
         $operator = $field.'_op';
 
-        if (array_key_exists($operator, $formdata)) {
-            if ($formdata->$operator != 5 and $formdata->$field == '') {
+        if (property_exists($formdata, $operator)) {
+            if ($formdata->$operator != 5 && $formdata->$field == '') {
                 // No data - no change except for empty filter.
                 return false;
             }

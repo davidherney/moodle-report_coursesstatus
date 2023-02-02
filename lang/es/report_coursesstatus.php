@@ -18,7 +18,7 @@
  * Strings for component 'report_coursesstatus'
  *
  * @package    report_coursesstatus
- * @copyright 2017 David Herney Bernal - cirano
+ * @copyright  2017 David Herney Bernal - cirano
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,3 +33,5 @@ $string['pluginname'] = 'Estados de cursos';
 $string['startdate'] = 'Inicio';
 $string['timecreated'] = 'Creación';
 $string['timemodified'] = 'Modificación';
+$string['enablelastmodify'] = 'Habilitar campo de última modificación';
+$string['enablelastmodify_help'] = 'Habilitar esta opción puede consumir muchos recursos según el tamaño del registro.';

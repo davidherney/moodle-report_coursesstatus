@@ -34,7 +34,6 @@ $page           = optional_param('page', 0, PARAM_INT);
 $perpage        = optional_param('perpage', 30, PARAM_INT);        // how many per page
 $format         = optional_param('format', '', PARAM_ALPHA);
 
-
 admin_externalpage_setup('reportcoursesstatus', '', null, '', array('pagelayout' => 'report'));
 
 $baseurl = new moodle_url('/report/coursesstatus/index.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage));
@@ -48,8 +47,12 @@ if ($format) {
     $perpage = 0;
 }
 
+$enablelastmodify = get_config('report_coursesstatus', 'enablelastmodify');
+
 $withlastmodify = false;
-if (strpos($extrasql, 'l.lastmodify') !== false) {
+if ($enablelastmodify && strpos($extrasql, 'l.lastmodify') !== false) {
+    var_dump($withlastmodify);
+    exit;
     $withlastmodify = true;
     $extrasql = $extrasql ? ' WHERE ' . $extrasql : '';
 
@@ -79,24 +82,28 @@ if ($courses) {
 
     $categories = $DB->get_records('course_categories');
 
-    $stringcolumns = array(
+    $stringcolumns = [
         'id' => 'id',
         'fullname' => get_string('course'),
         'shortname' => get_string('shortname'),
         'idnumber' => get_string('idnumber'),
         'startdate' => get_string('startdate', 'report_coursesstatus'),
         'timecreated' => get_string('timecreated', 'report_coursesstatus'),
-        'timemodified' => get_string('timemodified', 'report_coursesstatus'),
-        'lastmodify' => get_string('lastmodify', 'report_coursesstatus'),
-        'roleassignments' => get_string('roleassignments'),
-        'category' => get_string('category'),
-        'visible' => get_string('visible'),
-        'format' => get_string('format'),
-        'groupmode' => get_string('groupmode'),
-        'groupmodeforce' => get_string('groupmodeforce'),
-        'lang' => get_string('language'),
-        'enablecompletion' => get_string('enablecompletion', 'completion')
-    );
+        'timemodified' => get_string('timemodified', 'report_coursesstatus')
+    ];
+
+    if ($enablelastmodify) {
+        $stringcolumns['lastmodify'] = get_string('lastmodify', 'report_coursesstatus');
+    }
+
+    $stringcolumns['roleassignments'] = get_string('roleassignments');
+    $stringcolumns['category'] = get_string('category');
+    $stringcolumns['visible'] = get_string('visible');
+    $stringcolumns['format'] = get_string('format');
+    $stringcolumns['groupmode'] = get_string('groupmode');
+    $stringcolumns['groupmodeforce'] = get_string('groupmodeforce');
+    $stringcolumns['lang'] = get_string('language');
+    $stringcolumns['enablecompletion'] = get_string('enablecompletion', 'completion');
 
     $strcsystem = get_string('categorysystem', 'report_coursesstatus');
     $strftimedate = get_string('strftimedatetimeshort');
@@ -105,17 +112,27 @@ if ($courses) {
 
     // Only download data.
     if ($format) {
-        $columns = array('id', 'fullname', 'shortname', 'idnumber', 'startdate', 'timecreated', 'timemodified', 'lastmodify',
-        'visible', 'format', 'groupmode', 'groupmodeforce', 'lang', 'enablecompletion');
+        $columns = ['id', 'fullname', 'shortname', 'idnumber', 'startdate', 'timecreated', 'timemodified'];
 
-        $fields = array();
+        if ($enablelastmodify) {
+            $columns[] = 'lastmodify';
+        }
+
+        $columns[] = 'visible';
+        $columns[] = 'format';
+        $columns[] = 'groupmode';
+        $columns[] = 'groupmodeforce';
+        $columns[] = 'lang';
+        $columns[] = 'enablecompletion';
+
+        $fields = [];
         foreach ($columns as $column) {
             $fields[$column] = $stringcolumns[$column];
         }
 
-        $data = array();
+        $data = [];
         $maxcats = 1;
-        $coursescats = array();
+        $coursescats = [];
 
         $rolenames = $DB->get_records('role', null, 'id, name, shortname');
 
@@ -128,14 +145,14 @@ if ($courses) {
             // ToDo: Build with log_manager.
             if ($withlastmodify) {
                 $lastchange = $row->lastmodify;
-            } else {
+            } else if ($enablelastmodify) {
                 $sql = "SELECT MAX(timecreated) AS time FROM {logstore_standard_log} WHERE courseid = ? AND crud <> 'r'";
                 $lastchange = $DB->get_field_sql($sql, array($row->id));
             }
 
             if ($lastchange) {
                 $row->lastmodify = userdate($lastchange, $strftimedate);
-            } else {
+            } else if ($enablelastmodify) {
                 $row->lastmodify = '';
             }
 
@@ -219,15 +236,21 @@ $table = null;
 
 if ($courses) {
 
-    $columns = array('fullname', 'shortname', 'idnumber', 'startdate', 'timecreated', 'timemodified', 'lastmodify',
-                    'roleassignments', 'category');
+    $columns = ['fullname', 'shortname', 'idnumber', 'startdate', 'timecreated', 'timemodified'];
+
+    if ($enablelastmodify) {
+        $columns[] = 'lastmodify';
+    }
+
+    $columns[] = 'roleassignments';
+    $columns[] = 'category';
 
     $table = new html_table;
-    $table->head = array();
+    $table->head = [];
 
     foreach ($columns as $column) {
 
-        if (in_array($column, array('lastmodify', 'roleassignments', 'category'))) {
+        if (in_array($column, ['lastmodify', 'roleassignments', 'category'])) {
             $table->head[] = $stringcolumns[$column];
 
         } else {
@@ -260,9 +283,10 @@ if ($courses) {
         $coursecontext = context_course::instance($row->id);
 
         // ToDo: Build with log_manager
+        $lastchange = null;
         if ($withlastmodify) {
             $lastchange = $row->lastmodify;
-        } else {
+        } else if ($enablelastmodify) {
             $sql = "SELECT MAX(timecreated) AS time FROM {logstore_standard_log} WHERE courseid = ? AND crud <> 'r'";
             $lastchange = $DB->get_field_sql($sql, array($row->id));
         }
@@ -321,13 +345,19 @@ if ($courses) {
         $roleassignments .= html_writer::end_tag('ul');
 
         // Create the row and add it to the table.
-        $cells = array(
+        $cells = [
             $coursename, $row->shortname, $row->idnumber,
             userdate($row->startdate, $strfdate),
             userdate($row->timecreated, $strftimedate),
-            userdate($row->timemodified, $strftimedate),
-            $lastmodify, $roleassignments,  $textcats
-        );
+            userdate($row->timemodified, $strftimedate)
+        ];
+
+        if ($enablelastmodify) {
+            $cells[] = $lastmodify;
+        }
+
+        $cells[] = $roleassignments;
+        $cells[] = $textcats;
 
         $tablerow = new html_table_row($cells);
         $tablerow->attributes['class'] = $statusclass;
@@ -354,8 +384,11 @@ if (!empty($table)) {
 
     $sql = "SELECT MIN(timecreated) AS time FROM {logstore_standard_log}";
     $oldchange = $DB->get_field_sql($sql);
-    echo $OUTPUT->notification(get_string('lastmodifynote', 'report_coursesstatus', userdate($oldchange, $strftimedate)),
-                    'notifymessage');
+
+    if ($enablelastmodify) {
+        echo $OUTPUT->notification(get_string('lastmodifynote', 'report_coursesstatus', userdate($oldchange, $strftimedate)),
+                        'notifymessage');
+    }
 
     echo html_writer::table($table);
 
